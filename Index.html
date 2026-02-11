@@ -33,7 +33,7 @@
       min-height: 100vh;
     }
 
-    /* --- Toggle Button (Fixed) --- */
+    /* --- Toggle Button --- */
     .mode-btn {
       position: fixed; top: 20px; right: 20px;
       background: #fff; border: 2px solid #E5E7EB;
@@ -46,7 +46,7 @@
     .mode-btn:hover { transform: scale(1.05); border-color: var(--primary); color: var(--primary); }
     .mode-icon { width: 20px; height: 20px; }
 
-    /* --- Header (Always Centered) --- */
+    /* --- Header (Centered) --- */
     header { 
       text-align: center; margin-bottom: 40px; margin-top: 10px;
       width: 100%; max-width: 900px; margin-left: auto; margin-right: auto;
@@ -75,7 +75,7 @@
       position: relative;
     }
 
-    /* --- QR Panel (Left Side - Sticky) --- */
+    /* --- QR Panel (Left Sticky) --- */
     .qr-panel {
       display: none; opacity: 0; width: 350px; flex-shrink: 0;
       flex-direction: column; align-items: center; text-align: center;
@@ -90,7 +90,7 @@
     }
     .qr-desc { font-size: 1rem; color: var(--text-sub); }
 
-    /* --- List Panel (Right Side) --- */
+    /* --- List Panel (Right) --- */
     .list-panel { width: 100%; }
     .list-container {
       display: flex; flex-direction: column; 
@@ -103,15 +103,9 @@
     }
     body.split-mode .qr-panel {
       display: flex; opacity: 1; animation: slideIn 0.5s ease forwards;
-      width: 500px; /* ขยาย QR ใหญ่พิเศษ */
+      width: 500px; /* QR ใหญ่สะใจตามขอ */
     }
     body.split-mode .list-panel { flex-grow: 1; }
-
-    /* Resize in Split Mode */
-    body.split-mode .team-img { width: 110px; }
-    body.split-mode .card-rank-1 .team-img { width: 150px; }
-    body.split-mode .rank-num { font-size: 1.3rem; }
-    body.split-mode .name-main { font-size: 1.1rem; }
 
     /* --- List Card Design --- */
     .list-card {
@@ -195,42 +189,20 @@
   </div>
 
   <script>
-    const SHEET_ID = '1feOczrnI9IlgqL31UL51rFdBp59kyvGgnhvyP_wDVh4'; 
-    const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/pub?gid=0&single=true&output=csv`;
-
-    const TEAMS_DATA = [
-      { full_name: "Nurse To Be Excellent - พยาบาลศาสตรบัณฑิต", name: "Nurse To Be Excellent", major: "พยาบาลศาสตรบัณฑิต", img: "https://s.imgz.io/2026/02/11/3159955c1133c2f4d.jpg" },
-      { full_name: "Nawat-Next - วท.บ. สาขาวิชานวัตกรรมวิทยาศาสตร์การแพทย์", name: "Nawat-Next", major: "วท.บ. สาขาวิชานวัตกรรมวิทยาศาสตร์การแพทย์", img: "https://s.imgz.io/2026/02/11/2a98288b32be20600.jpg" },
-      { full_name: "SoHigh - วท.บ. สาขาวิชาวิทยาศาสตร์ข้อมูลสุขภาพ", name: "SoHigh", major: "วท.บ. สาขาวิชาวิทยาศาสตร์ข้อมูลสุขภาพ", img: "https://s.imgz.io/2026/02/11/487d694afabe73aba.jpg" },
-      { full_name: "Tom and Jerry - วท.บ. สาขาวิชารังสีเทคนิค", name: "Tom and Jerry", major: "วท.บ. สาขาวิชารังสีเทคนิค", img: "https://s.imgz.io/2026/02/11/56bab80fe7f2f1376.jpg" },
-      { full_name: "BNS Wish - พยาบาลศาสตรบัณฑิต (รับผู้สำเร็จปริญญาตรีสาขาอื่น)", name: "BNS Wish", major: "พยาบาลศาสตรบัณฑิต (รับผู้สำเร็จปริญญาตรีสาขาอื่น)", img: "https://s.imgz.io/2026/02/11/6081f2e3502476f5e.jpg" },
-      { full_name: "สามทหารเสือ - วท.บ. สาขาวิชาเทคโนโลยีอาหารทางการแพทย์และสุขภาพ", name: "สามทหารเสือ", major: "วท.บ. สาขาวิชาเทคโนโลยีอาหารทางการแพทย์และสุขภาพ", img: "https://s.imgz.io/2026/02/11/80fe464f125fd609e.jpg" },
-      { full_name: "อินเตอร์อินใจ - พยาบาลศาสตรบัณฑิต (หลักสูตรนานาชาติ)", name: "อินเตอร์อินใจ", major: "พยาบาลศาสตรบัณฑิต (หลักสูตรนานาชาติ)", img: "https://s.imgz.io/2026/02/11/92988b5cb5789de79.jpg" },
-      { full_name: "Human Move Next - วท.บ. วิทยาศาสตร์การเคลื่อนไหวและสุขภาพ", name: "Human Move Next", major: "วท.บ. วิทยาศาสตร์การเคลื่อนไหวและสุขภาพ", img: "https://s.imgz.io/2026/02/11/16b4ae5a00e65e1f7.jpg" },
-      { full_name: "SOS - วท.บ. สาขาวิชาฉุกเฉินการแพทย์", name: "SOS", major: "วท.บ. สาขาวิชาฉุกเฉินการแพทย์", img: "https://s.imgz.io/2026/02/11/75958eef47ff76210.jpg" }
-    ];
+    // *** แก้ไขตรงนี้: ใส่ Web App URL ของคุณที่ได้จากการ Deploy Google Apps Script ***
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxsDcpCoJWiTP2oum2cuCyrJu9Wk0WmKW4GGV86TXsKcNqnjvy7fEB3l-uMH5OWB-x_/exec';
 
     function toggleLayout() { document.body.classList.toggle('split-mode'); }
     let lastDataJson = "";
 
     async function fetchData() {
       try {
-        const response = await fetch(`${CSV_URL}&cachebust=${Date.now()}`); // กัน Cache ของ GitHub
-        const text = await response.text();
-        const rows = text.split('\n').slice(1);
-        const voteCounts = {};
-        rows.forEach(row => {
-          const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/); 
-          let vote = cols[1]; 
-          if (vote) {
-            vote = vote.replace(/^"|"$/g, '').trim();
-            voteCounts[vote] = (voteCounts[vote] || 0) + 1;
-          }
-        });
-        const result = TEAMS_DATA.map(team => ({ ...team, score: voteCounts[team.full_name] || 0 }));
-        result.sort((a, b) => b.score - a.score);
-        renderDashboard(result);
-      } catch (e) { console.error(e); }
+        const response = await fetch(WEB_APP_URL);
+        const data = await response.json();
+        renderDashboard(data);
+      } catch (e) {
+        console.error("เชื่อมต่อ Google Apps Script ไม่ได้:", e);
+      }
     }
 
     function renderDashboard(data) {
@@ -248,7 +220,7 @@
               <svg class="crown-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11h-14zm14 1v2H5v-2h14z"/></svg>
               <div class="rank-num">${r}</div>
             </div>
-            <div class="img-col"><img src="${team.img}" class="team-img" onerror="this.src='https://via.placeholder.com/160x90?text=IMG'"></div>
+            <div class="img-col"><img src="${team.image}" class="team-img" onerror="this.src='https://via.placeholder.com/160x90?text=IMG'"></div>
             <div class="info-col">
               <div class="name-main">${team.name}</div><div class="name-sub">${team.major}</div>
               <div class="bar-track"><div class="bar-fill" style="width: ${pc}%;"></div></div>
