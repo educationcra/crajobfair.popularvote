@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
   <meta charset="UTF-8">
   <title>CRA Job Fair 2026 Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     /* Reset & Setup */
@@ -30,9 +30,10 @@
       color: var(--text-main);
       overflow-x: hidden;
       padding: 20px;
+      min-height: 100vh;
     }
 
-    /* --- Toggle Button --- */
+    /* --- Toggle Button (Fixed) --- */
     .mode-btn {
       position: fixed; top: 20px; right: 20px;
       background: #fff; border: 2px solid #E5E7EB;
@@ -45,10 +46,11 @@
     .mode-btn:hover { transform: scale(1.05); border-color: var(--primary); color: var(--primary); }
     .mode-icon { width: 20px; height: 20px; }
 
-    /* --- Header (Centered) --- */
+    /* --- Header (Always Centered) --- */
     header { 
-      text-align: center; margin-bottom: 30px; margin-top: 10px;
+      text-align: center; margin-bottom: 40px; margin-top: 10px;
       width: 100%; max-width: 900px; margin-left: auto; margin-right: auto;
+      position: relative; z-index: 10;
     }
     .event-sub-title { font-size: 1.2rem; color: var(--text-sub); font-weight: 500; margin-bottom: 8px; }
     .main-title-wrapper { display: flex; align-items: center; justify-content: center; gap: 12px; }
@@ -73,41 +75,35 @@
       position: relative;
     }
 
-    /* --- QR Panel (Sticky Left) --- */
+    /* --- QR Panel (Left Side - Sticky) --- */
     .qr-panel {
       display: none; opacity: 0; width: 350px; flex-shrink: 0;
       flex-direction: column; align-items: center; text-align: center;
       background: white; border-radius: 24px; padding: 30px;
-      box-shadow: var(--shadow-md); 
-      height: fit-content; 
-      position: sticky; top: 80px; 
+      box-shadow: var(--shadow-md); height: fit-content; 
+      position: sticky; top: 40px; 
     }
     .qr-title { font-size: 1.8rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 15px; line-height: 1.2; }
     .qr-image { 
-      width: 100%; border-radius: 16px; 
-      border: 4px solid var(--gold); 
+      width: 100%; border-radius: 16px; border: 4px solid var(--gold); 
       box-shadow: 0 10px 20px rgba(0,0,0,0.1); margin-bottom: 15px;
     }
     .qr-desc { font-size: 1rem; color: var(--text-sub); }
 
-    /* --- List Panel (Right) --- */
+    /* --- List Panel (Right Side) --- */
     .list-panel { width: 100%; }
     .list-container {
       display: flex; flex-direction: column; 
-      gap: 12px; /* ช่องไฟ 12px ตามที่ขอ */
-      padding-bottom: 40px;
+      gap: 12px; padding-bottom: 40px;
     }
 
     /* ====== SPLIT MODE LOGIC ====== */
     body.split-mode .content-wrapper {
-      max-width: 1300px;
-      flex-direction: row;
-      gap: 40px;
-      align-items: flex-start;
+      max-width: 1350px; flex-direction: row; gap: 40px; align-items: flex-start;
     }
     body.split-mode .qr-panel {
       display: flex; opacity: 1; animation: slideIn 0.5s ease forwards;
-      width: 450px;
+      width: 500px; /* ขยาย QR ใหญ่พิเศษ */
     }
     body.split-mode .list-panel { flex-grow: 1; }
 
@@ -119,39 +115,25 @@
 
     /* --- List Card Design --- */
     .list-card {
-      background: var(--card-bg); border-radius: 18px; 
-      display: flex; align-items: center;
-      padding: 12px 20px; 
-      border: 1px solid #E5E7EB; 
-      box-shadow: var(--shadow-sm);
-      transition: transform 0.2s;
-      width: 100%;
+      background: var(--card-bg); border-radius: 18px; display: flex; align-items: center;
+      padding: 12px 20px; border: 1px solid #E5E7EB; box-shadow: var(--shadow-sm);
+      transition: transform 0.2s; width: 100%;
     }
-
-    /* Column Styles */
     .rank-col { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 50px; flex-shrink: 0; margin-right: 15px; }
     .rank-num { font-weight: 800; font-size: 1.5rem; color: #D1D5DB; line-height: 1; }
     .crown-icon { width: 32px; height: 32px; color: var(--gold); margin-bottom: -5px; display: none; }
-
     .img-col { flex-shrink: 0; margin-right: 20px; }
     .team-img { width: 130px; aspect-ratio: 16/9; border-radius: 10px; object-fit: cover; display: block; background: #eee; transition: width 0.3s; }
-
     .info-col { flex-grow: 1; min-width: 0; margin-right: 15px; display: flex; flex-direction: column; justify-content: center; }
     .name-main { font-weight: 700; font-size: 1.1rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .name-sub { font-weight: 400; font-size: 0.9rem; color: var(--text-sub); margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    
     .bar-track { width: 100%; height: 8px; background: #F3F4F6; border-radius: 4px; overflow: hidden; }
     .bar-fill { height: 100%; border-radius: 4px; transition: width 1s ease; }
-
     .vote-col { flex-shrink: 0; }
     .vote-pill { background: #EFF6FF; color: var(--primary); border: 1px solid #DBEAFE; padding: 8px 16px; border-radius: 50px; font-weight: 600; font-size: 0.95rem; white-space: nowrap; }
 
     /* Special Rank 1 */
-    .card-rank-1 { 
-      background: linear-gradient(to right, #ffffff, var(--gold-light)); 
-      border: 2px solid var(--gold); box-shadow: var(--shadow-glow); 
-      padding: 18px 25px; transform: scale(1.02); z-index: 10; margin-bottom: 5px; 
-    }
+    .card-rank-1 { background: linear-gradient(to right, #ffffff, var(--gold-light)); border: 2px solid var(--gold); box-shadow: var(--shadow-glow); padding: 18px 25px; transform: scale(1.02); z-index: 10; margin-bottom: 5px; }
     .card-rank-1 .crown-icon { display: block; animation: float 2s ease-in-out infinite; }
     .card-rank-1 .rank-num { color: var(--gold); font-size: 2.2rem; text-shadow: 1px 1px 0 rgba(0,0,0,0.1); }
     .card-rank-1 .team-img { width: 170px; border: 2px solid var(--gold); box-shadow: var(--shadow-sm); }
@@ -167,7 +149,6 @@
     .loading-container { text-align: center; margin-top: 50px; color: #9CA3AF; }
     .spinner { width: 30px; height: 30px; animation: spin 1s linear infinite; color: var(--primary); }
 
-    /* Responsive */
     @media (max-width: 850px) {
       body.split-mode .content-wrapper { flex-direction: column; align-items: center; }
       body.split-mode .qr-panel { width: 100%; position: relative; top: 0; margin-bottom: 20px; }
@@ -180,9 +161,7 @@
 <body>
 
   <button class="mode-btn" onclick="toggleLayout()">
-    <svg class="mode-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-    </svg>
+    <svg class="mode-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" /></svg>
     สแกน QR
   </button>
 
@@ -216,168 +195,71 @@
   </div>
 
   <script>
-    // --- Configuration ---
-    // ใส่ ID ของ Google Sheet (ต้อง Publish to web เป็น CSV แล้ว)
     const SHEET_ID = '1feOczrnI9IlgqL31UL51rFdBp59kyvGgnhvyP_wDVh4'; 
     const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/pub?gid=0&single=true&output=csv`;
 
-    // ข้อมูลทีม (Mapping กับชื่อใน Sheet)
     const TEAMS_DATA = [
-      { 
-        full_name: "Nurse To Be Excellent - พยาบาลศาสตรบัณฑิต", 
-        name: "Nurse To Be Excellent", 
-        major: "พยาบาลศาสตรบัณฑิต",
-        img: "https://s.imgz.io/2026/02/11/3159955c1133c2f4d.jpg" 
-      },
-      { 
-        full_name: "Nawat-Next - วท.บ. สาขาวิชานวัตกรรมวิทยาศาสตร์การแพทย์", 
-        name: "Nawat-Next", 
-        major: "วท.บ. สาขาวิชานวัตกรรมวิทยาศาสตร์การแพทย์",
-        img: "https://s.imgz.io/2026/02/11/2a98288b32be20600.jpg" 
-      },
-      { 
-        full_name: "SoHigh - วท.บ. สาขาวิชาวิทยาศาสตร์ข้อมูลสุขภาพ", 
-        name: "SoHigh", 
-        major: "วท.บ. สาขาวิชาวิทยาศาสตร์ข้อมูลสุขภาพ",
-        img: "https://s.imgz.io/2026/02/11/487d694afabe73aba.jpg" 
-      },
-      { 
-        full_name: "Tom and Jerry - วท.บ. สาขาวิชารังสีเทคนิค", 
-        name: "Tom and Jerry", 
-        major: "วท.บ. สาขาวิชารังสีเทคนิค",
-        img: "https://s.imgz.io/2026/02/11/56bab80fe7f2f1376.jpg" 
-      },
-      { 
-        full_name: "BNS Wish - พยาบาลศาสตรบัณฑิต (รับผู้สำเร็จปริญญาตรีสาขาอื่น)", 
-        name: "BNS Wish", 
-        major: "พยาบาลศาสตรบัณฑิต (รับผู้สำเร็จปริญญาตรีสาขาอื่น)",
-        img: "https://s.imgz.io/2026/02/11/6081f2e3502476f5e.jpg" 
-      },
-      { 
-        full_name: "สามทหารเสือ - วท.บ. สาขาวิชาเทคโนโลยีอาหารทางการแพทย์และสุขภาพ", 
-        name: "สามทหารเสือ", 
-        major: "วท.บ. สาขาวิชาเทคโนโลยีอาหารทางการแพทย์และสุขภาพ",
-        img: "https://s.imgz.io/2026/02/11/80fe464f125fd609e.jpg" 
-      },
-      { 
-        full_name: "อินเตอร์อินใจ - พยาบาลศาสตรบัณฑิต (หลักสูตรนานาชาติ)", 
-        name: "อินเตอร์อินใจ", 
-        major: "พยาบาลศาสตรบัณฑิต (หลักสูตรนานาชาติ)",
-        img: "https://s.imgz.io/2026/02/11/92988b5cb5789de79.jpg" 
-      },
-      { 
-        full_name: "Human Move Next - วท.บ. วิทยาศาสตร์การเคลื่อนไหวและสุขภาพ", 
-        name: "Human Move Next", 
-        major: "วท.บ. วิทยาศาสตร์การเคลื่อนไหวและสุขภาพ",
-        img: "https://s.imgz.io/2026/02/11/16b4ae5a00e65e1f7.jpg" 
-      },
-      { 
-        full_name: "SOS - วท.บ. สาขาวิชาฉุกเฉินการแพทย์", 
-        name: "SOS", 
-        major: "วท.บ. สาขาวิชาฉุกเฉินการแพทย์",
-        img: "https://s.imgz.io/2026/02/11/75958eef47ff76210.jpg" 
-      }
+      { full_name: "Nurse To Be Excellent - พยาบาลศาสตรบัณฑิต", name: "Nurse To Be Excellent", major: "พยาบาลศาสตรบัณฑิต", img: "https://s.imgz.io/2026/02/11/3159955c1133c2f4d.jpg" },
+      { full_name: "Nawat-Next - วท.บ. สาขาวิชานวัตกรรมวิทยาศาสตร์การแพทย์", name: "Nawat-Next", major: "วท.บ. สาขาวิชานวัตกรรมวิทยาศาสตร์การแพทย์", img: "https://s.imgz.io/2026/02/11/2a98288b32be20600.jpg" },
+      { full_name: "SoHigh - วท.บ. สาขาวิชาวิทยาศาสตร์ข้อมูลสุขภาพ", name: "SoHigh", major: "วท.บ. สาขาวิชาวิทยาศาสตร์ข้อมูลสุขภาพ", img: "https://s.imgz.io/2026/02/11/487d694afabe73aba.jpg" },
+      { full_name: "Tom and Jerry - วท.บ. สาขาวิชารังสีเทคนิค", name: "Tom and Jerry", major: "วท.บ. สาขาวิชารังสีเทคนิค", img: "https://s.imgz.io/2026/02/11/56bab80fe7f2f1376.jpg" },
+      { full_name: "BNS Wish - พยาบาลศาสตรบัณฑิต (รับผู้สำเร็จปริญญาตรีสาขาอื่น)", name: "BNS Wish", major: "พยาบาลศาสตรบัณฑิต (รับผู้สำเร็จปริญญาตรีสาขาอื่น)", img: "https://s.imgz.io/2026/02/11/6081f2e3502476f5e.jpg" },
+      { full_name: "สามทหารเสือ - วท.บ. สาขาวิชาเทคโนโลยีอาหารทางการแพทย์และสุขภาพ", name: "สามทหารเสือ", major: "วท.บ. สาขาวิชาเทคโนโลยีอาหารทางการแพทย์และสุขภาพ", img: "https://s.imgz.io/2026/02/11/80fe464f125fd609e.jpg" },
+      { full_name: "อินเตอร์อินใจ - พยาบาลศาสตรบัณฑิต (หลักสูตรนานาชาติ)", name: "อินเตอร์อินใจ", major: "พยาบาลศาสตรบัณฑิต (หลักสูตรนานาชาติ)", img: "https://s.imgz.io/2026/02/11/92988b5cb5789de79.jpg" },
+      { full_name: "Human Move Next - วท.บ. วิทยาศาสตร์การเคลื่อนไหวและสุขภาพ", name: "Human Move Next", major: "วท.บ. วิทยาศาสตร์การเคลื่อนไหวและสุขภาพ", img: "https://s.imgz.io/2026/02/11/16b4ae5a00e65e1f7.jpg" },
+      { full_name: "SOS - วท.บ. สาขาวิชาฉุกเฉินการแพทย์", name: "SOS", major: "วท.บ. สาขาวิชาฉุกเฉินการแพทย์", img: "https://s.imgz.io/2026/02/11/75958eef47ff76210.jpg" }
     ];
 
-    function toggleLayout() {
-      document.body.classList.toggle('split-mode');
-    }
-
+    function toggleLayout() { document.body.classList.toggle('split-mode'); }
     let lastDataJson = "";
 
     async function fetchData() {
       try {
-        const response = await fetch(CSV_URL);
+        const response = await fetch(`${CSV_URL}&cachebust=${Date.now()}`); // กัน Cache ของ GitHub
         const text = await response.text();
-        processCSV(text);
-      } catch (error) {
-        console.error("Error fetching CSV:", error);
-      }
-    }
-
-    function processCSV(csvText) {
-      const rows = csvText.split('\n').slice(1); // ข้าม Header แถวแรก
-      const voteCounts = {};
-
-      rows.forEach(row => {
-        // แยก CSV อย่างง่าย (ถ้าชื่อทีมไม่มี comma ใช้ split ได้เลย)
-        // Column B คือ index 1
-        const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/); 
-        let vote = cols[1]; 
-        
-        if (vote) {
-          // ลบ quote ถ้ามี
-          vote = vote.replace(/^"|"$/g, '').trim();
-          voteCounts[vote] = (voteCounts[vote] || 0) + 1;
-        }
-      });
-
-      // รวมคะแนนกับข้อมูลทีม
-      const result = TEAMS_DATA.map(team => ({
-        name: team.name,
-        major: team.major,
-        image: team.img,
-        score: voteCounts[team.full_name] || 0
-      }));
-
-      // เรียงลำดับ
-      result.sort((a, b) => b.score - a.score);
-
-      renderDashboard(result);
+        const rows = text.split('\n').slice(1);
+        const voteCounts = {};
+        rows.forEach(row => {
+          const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/); 
+          let vote = cols[1]; 
+          if (vote) {
+            vote = vote.replace(/^"|"$/g, '').trim();
+            voteCounts[vote] = (voteCounts[vote] || 0) + 1;
+          }
+        });
+        const result = TEAMS_DATA.map(team => ({ ...team, score: voteCounts[team.full_name] || 0 }));
+        result.sort((a, b) => b.score - a.score);
+        renderDashboard(result);
+      } catch (e) { console.error(e); }
     }
 
     function renderDashboard(data) {
-      let currentDataJson = JSON.stringify(data);
-      if (currentDataJson === lastDataJson) return;
-      lastDataJson = currentDataJson;
-
-      const totalVotes = data.reduce((acc, curr) => acc + curr.score, 0);
-      document.getElementById('total-sum').innerText = totalVotes.toLocaleString();
-      const maxScore = Math.max(...data.map(d => d.score)) || 1;
-      
+      if (JSON.stringify(data) === lastDataJson) return;
+      lastDataJson = JSON.stringify(data);
+      document.getElementById('total-sum').innerText = data.reduce((s, t) => s + t.score, 0).toLocaleString();
+      const maxS = Math.max(...data.map(d => d.score)) || 1;
       const listArea = document.getElementById('list-area');
-      let html = '';
-
-      data.forEach((team, index) => {
-        const rank = index + 1;
-        const percent = (team.score / maxScore) * 100;
-        
-        let specialClass = (rank === 1) ? 'card-rank-1' : 'card-normal';
-        
-        html += `
-          <div class="list-card ${specialClass}">
+      listArea.innerHTML = data.map((team, i) => {
+        const r = i + 1;
+        const pc = (team.score / maxS) * 100;
+        return `
+          <div class="list-card ${r===1?'card-rank-1':'card-normal'}">
             <div class="rank-col">
-              <svg class="crown-icon" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11h-14zm14 1v2H5v-2h14z"/>
-              </svg>
-              <div class="rank-num">${rank}</div>
+              <svg class="crown-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11h-14zm14 1v2H5v-2h14z"/></svg>
+              <div class="rank-num">${r}</div>
             </div>
-
-            <div class="img-col">
-              <img src="${team.image}" class="team-img" onerror="this.src='https://via.placeholder.com/160x90?text=IMG'">
-            </div>
-
+            <div class="img-col"><img src="${team.img}" class="team-img" onerror="this.src='https://via.placeholder.com/160x90?text=IMG'"></div>
             <div class="info-col">
-              <div class="name-main">${team.name}</div>
-              <div class="name-sub">${team.major}</div>
-              <div class="bar-track">
-                <div class="bar-fill" style="width: ${percent}%;"></div>
-              </div>
+              <div class="name-main">${team.name}</div><div class="name-sub">${team.major}</div>
+              <div class="bar-track"><div class="bar-fill" style="width: ${pc}%;"></div></div>
             </div>
-
-            <div class="vote-col">
-              <div class="vote-pill">โหวต ${team.score}</div>
-            </div>
-          </div>
-        `;
-      });
-
-      listArea.innerHTML = html;
+            <div class="vote-col"><div class="vote-pill">โหวต ${team.score}</div></div>
+          </div>`;
+      }).join('');
     }
 
-    // เริ่มทำงาน
     fetchData();
-    setInterval(fetchData, 3000); // เช็คข้อมูลทุก 3 วินาที
+    setInterval(fetchData, 3000); // ดึงข้อมูลทุก 3 วินาที
   </script>
 </body>
 </html>
