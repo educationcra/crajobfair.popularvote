@@ -15,7 +15,7 @@
       --primary: #2563EB;
       --primary-dark: #1e40af;
       --gold: #FBBF24;
-      --gold-light: #FFFBEB;
+      --gold-dark: #B45309;
       --text-main: #1F2937;
       --text-sub: #6B7280;
       --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
@@ -46,9 +46,9 @@
     .mode-btn:hover { transform: scale(1.05); border-color: var(--primary); color: var(--primary); }
     .mode-icon { width: 20px; height: 20px; }
 
-    /* --- Header (Centered) --- */
+    /* --- Header --- */
     header { 
-      text-align: center; margin-bottom: 40px; margin-top: 10px;
+      text-align: center; margin-bottom: 30px; margin-top: 10px;
       width: 100%; max-width: 900px; margin-left: auto; margin-right: auto;
       position: relative; z-index: 10;
     }
@@ -65,90 +65,74 @@
       box-shadow: var(--shadow-sm); font-weight: 600; color: var(--text-sub); 
       margin-top: 15px; font-size: 1rem; 
     }
-    .chart-icon { width: 20px; height: 20px; color: var(--primary); }
 
     /* --- Layout Container --- */
     .content-wrapper {
       width: 100%; max-width: 900px; margin: 0 auto;
-      display: flex; flex-direction: column;
-      gap: 0; transition: all 0.5s ease;
-      position: relative;
+      display: flex; flex-direction: column; gap: 0; transition: all 0.5s ease;
     }
 
-    /* --- QR Panel (Left Sticky) --- */
+    /* --- QR Panel --- */
     .qr-panel {
-      display: none; opacity: 0; width: 350px; flex-shrink: 0;
+      display: none; opacity: 0;
       flex-direction: column; align-items: center; text-align: center;
-      background: white; border-radius: 24px; padding: 30px;
+      background: white; border-radius: 24px; padding: 40px;
       box-shadow: var(--shadow-md); height: fit-content; 
       position: sticky; top: 40px; 
     }
-    .qr-title { font-size: 1.8rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 15px; line-height: 1.2; }
+    .qr-title { font-size: 2rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 20px; }
     .qr-image { 
-      width: 100%; border-radius: 16px; border: 4px solid var(--gold); 
-      box-shadow: 0 10px 20px rgba(0,0,0,0.1); margin-bottom: 15px;
+      width: 100%; max-width: 500px; border-radius: 16px; border: 5px solid var(--gold); 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15); margin-bottom: 20px;
     }
-    .qr-desc { font-size: 1rem; color: var(--text-sub); }
 
-    /* --- List Panel (Right) --- */
+    /* --- List Panel --- */
     .list-panel { width: 100%; }
-    .list-container {
-      display: flex; flex-direction: column; 
-      gap: 12px; padding-bottom: 40px;
-    }
+    .list-container { display: flex; flex-direction: column; gap: 12px; padding-bottom: 40px; }
 
-    /* ====== SPLIT MODE LOGIC ====== */
+    /* ====== SPLIT MODE LOGIC (2 Columns) ====== */
     body.split-mode .content-wrapper {
-      max-width: 1350px; flex-direction: row; gap: 40px; align-items: flex-start;
+      max-width: 1400px; flex-direction: row; gap: 40px; align-items: flex-start;
     }
-    body.split-mode .qr-panel {
-      display: flex; opacity: 1; animation: slideIn 0.5s ease forwards;
-      width: 500px; /* QR ใหญ่สะใจตามขอ */
-    }
-    body.split-mode .list-panel { flex-grow: 1; }
+    body.split-mode .qr-panel { display: flex; opacity: 1; flex: 1.5; animation: slideIn 0.5s ease forwards; }
+    body.split-mode .list-panel { flex: 1; }
 
     /* --- List Card Design --- */
     .list-card {
       background: var(--card-bg); border-radius: 18px; display: flex; align-items: center;
-      padding: 12px 20px; border: 1px solid #E5E7EB; box-shadow: var(--shadow-sm);
-      transition: transform 0.2s; width: 100%;
+      padding: 15px 25px; border: 1px solid #E5E7EB; box-shadow: var(--shadow-sm);
+      transition: all 0.2s; width: 100%;
     }
-    .rank-col { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 50px; flex-shrink: 0; margin-right: 15px; }
-    .rank-num { font-weight: 800; font-size: 1.5rem; color: #D1D5DB; line-height: 1; }
+    .rank-col { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; flex-shrink: 0; margin-right: 20px; }
+    .rank-num { font-weight: 800; font-size: 1.6rem; color: #D1D5DB; line-height: 1; }
     .crown-icon { width: 32px; height: 32px; color: var(--gold); margin-bottom: -5px; display: none; }
-    .img-col { flex-shrink: 0; margin-right: 20px; }
-    .team-img { width: 130px; aspect-ratio: 16/9; border-radius: 10px; object-fit: cover; display: block; background: #eee; transition: width 0.3s; }
-    .info-col { flex-grow: 1; min-width: 0; margin-right: 15px; display: flex; flex-direction: column; justify-content: center; }
-    .name-main { font-weight: 700; font-size: 1.1rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .name-sub { font-weight: 400; font-size: 0.9rem; color: var(--text-sub); margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .img-col { flex-shrink: 0; margin-right: 25px; }
+    .team-img { width: 130px; aspect-ratio: 16/9; border-radius: 10px; object-fit: cover; display: block; background: #eee; }
+    .info-col { flex-grow: 1; min-width: 0; margin-right: 20px; display: flex; flex-direction: column; justify-content: center; }
+    .name-main { font-weight: 700; font-size: 1.2rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .name-sub { font-weight: 400; font-size: 0.95rem; color: var(--text-sub); margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .bar-track { width: 100%; height: 8px; background: #F3F4F6; border-radius: 4px; overflow: hidden; }
-    .bar-fill { height: 100%; border-radius: 4px; transition: width 1s ease; }
-    .vote-col { flex-shrink: 0; }
-    .vote-pill { background: #EFF6FF; color: var(--primary); border: 1px solid #DBEAFE; padding: 8px 16px; border-radius: 50px; font-weight: 600; font-size: 0.95rem; white-space: nowrap; }
+    .bar-fill { height: 100%; border-radius: 4px; transition: width 1s ease; background: var(--primary); }
+    .vote-pill { background: #EFF6FF; color: var(--primary); border: 1px solid #DBEAFE; padding: 8px 18px; border-radius: 50px; font-weight: 600; font-size: 1rem; white-space: nowrap; }
 
     /* Special Rank 1 */
-    .card-rank-1 { background: linear-gradient(to right, #ffffff, var(--gold-light)); border: 2px solid var(--gold); box-shadow: var(--shadow-glow); padding: 18px 25px; transform: scale(1.02); z-index: 10; margin-bottom: 5px; }
+    .card-rank-1 { background: linear-gradient(to right, #ffffff, var(--gold-light)); border: 2px solid var(--gold); box-shadow: var(--shadow-glow); transform: scale(1.03); }
     .card-rank-1 .crown-icon { display: block; animation: float 2s ease-in-out infinite; }
-    .card-rank-1 .rank-num { color: var(--gold); font-size: 2.2rem; text-shadow: 1px 1px 0 rgba(0,0,0,0.1); }
-    .card-rank-1 .team-img { width: 170px; border: 2px solid var(--gold); box-shadow: var(--shadow-sm); }
-    .card-rank-1 .name-main { font-size: 1.3rem; color: #000; }
+    .card-rank-1 .rank-num { color: var(--gold); font-size: 2.4rem; text-shadow: 1px 1px 0 rgba(0,0,0,0.1); }
+    .card-rank-1 .team-img { width: 180px; border: 2px solid var(--gold); }
     .card-rank-1 .bar-fill { background: linear-gradient(90deg, var(--gold), #fbbf24); }
-    .card-rank-1 .vote-pill { background: var(--gold); color: #fff; border: none; box-shadow: 0 4px 6px rgba(245, 158, 11, 0.3); padding: 10px 22px; font-size: 1.1rem; }
-    .card-normal .bar-fill { background: var(--primary); }
+    .card-rank-1 .vote-pill { background: var(--gold); color: #fff; border: none; }
 
     @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
     @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
     @keyframes spin { 100% { transform: rotate(360deg); } }
-
-    .loading-container { text-align: center; margin-top: 50px; color: #9CA3AF; }
     .spinner { width: 30px; height: 30px; animation: spin 1s linear infinite; color: var(--primary); }
-
+    
     @media (max-width: 850px) {
-      body.split-mode .content-wrapper { flex-direction: column; align-items: center; }
-      body.split-mode .qr-panel { width: 100%; position: relative; top: 0; margin-bottom: 20px; }
+      body.split-mode .content-wrapper { flex-direction: column; }
+      body.split-mode .qr-panel { display: none; }
       h1 { font-size: 2rem; }
-      .trophy-icon { width: 30px; height: 30px; }
-      .img-col { display: none; } 
+      .img-col { display: none; }
     }
   </style>
 </head>
@@ -166,8 +150,7 @@
       <h1>รางวัล Popular Vote</h1>
     </div>
     <div class="total-badge">
-      <svg class="chart-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
-      &nbsp; รวมคะแนนโหวต: <span id="total-sum">0</span>
+      <span>รวมคะแนนโหวต: </span><span id="total-sum">0</span>
     </div>
   </header>
 
@@ -175,21 +158,21 @@
     <div class="qr-panel">
       <div class="qr-title">สแกน QR เพื่อโหวต<br>ทีมที่ถูกใจมากที่สุด</div>
       <img src="https://s.imgz.io/2026/02/11/AAGB4-AUqkc_1770718222018d1dfd3d6650ac071.png" alt="QR Code" class="qr-image">
-      <div class="qr-desc">ร่วมเป็นส่วนหนึ่งในการตัดสินรางวัล Popular Vote</div>
+      <div style="font-size: 1.2rem; color: var(--text-sub);">ร่วมเป็นส่วนหนึ่งในการตัดสินรางวัล Popular Vote</div>
     </div>
 
     <div class="list-panel">
       <div id="list-area" class="list-container">
-        <div class="loading-container">
+        <div style="text-align:center; padding: 50px;">
           <svg class="spinner" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4V2A10 10 0 0 0 2 12h2a8 8 0 0 1 8-8z"/></svg>
-          <p>กำลังโหลด...</p>
+          <p>กำลังโหลดผลโหวต...</p>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // *** แก้ไขตรงนี้: ใส่ Web App URL ของคุณที่ได้จากการ Deploy Google Apps Script ***
+    // URL ของ Google Apps Script Web App
     const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxsDcpCoJWiTP2oum2cuCyrJu9Wk0WmKW4GGV86TXsKcNqnjvy7fEB3l-uMH5OWB-x_/exec';
 
     function toggleLayout() { document.body.classList.toggle('split-mode'); }
@@ -201,16 +184,18 @@
         const data = await response.json();
         renderDashboard(data);
       } catch (e) {
-        console.error("เชื่อมต่อ Google Apps Script ไม่ได้:", e);
+        console.error("Fetch error:", e);
       }
     }
 
     function renderDashboard(data) {
       if (JSON.stringify(data) === lastDataJson) return;
       lastDataJson = JSON.stringify(data);
+      
       document.getElementById('total-sum').innerText = data.reduce((s, t) => s + t.score, 0).toLocaleString();
       const maxS = Math.max(...data.map(d => d.score)) || 1;
       const listArea = document.getElementById('list-area');
+      
       listArea.innerHTML = data.map((team, i) => {
         const r = i + 1;
         const pc = (team.score / maxS) * 100;
@@ -220,18 +205,23 @@
               <svg class="crown-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11h-14zm14 1v2H5v-2h14z"/></svg>
               <div class="rank-num">${r}</div>
             </div>
-            <div class="img-col"><img src="${team.image}" class="team-img" onerror="this.src='https://via.placeholder.com/160x90?text=IMG'"></div>
+            <div class="img-col">
+              <img src="${team.image}" class="team-img" onerror="this.src='https://via.placeholder.com/160x90?text=IMG'">
+            </div>
             <div class="info-col">
-              <div class="name-main">${team.name}</div><div class="name-sub">${team.major}</div>
+              <div class="name-main">${team.name}</div>
+              <div class="name-sub">${team.major}</div>
               <div class="bar-track"><div class="bar-fill" style="width: ${pc}%;"></div></div>
             </div>
-            <div class="vote-col"><div class="vote-pill">โหวต ${team.score}</div></div>
+            <div class="vote-col">
+              <div class="vote-pill">โหวต ${team.score}</div>
+            </div>
           </div>`;
       }).join('');
     }
 
     fetchData();
-    setInterval(fetchData, 3000); // ดึงข้อมูลทุก 3 วินาที
+    setInterval(fetchData, 3000);
   </script>
 </body>
 </html>
