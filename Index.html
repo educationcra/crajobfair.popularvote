@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>CRA Job Fair 2026 Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* Reset & Setup */
+    * { box-sizing: border-box; }
+    
+    :root {
+      --bg-body: #F3F4F6;
+      --card-bg: #FFFFFF;
+      --primary: #2563EB;
+      --primary-dark: #1e40af;
+      --gold: #FBBF24;
+      --gold-light: #FFFBEB;
+      --text-main: #1F2937;
+      --text-sub: #6B7280;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --shadow-glow: 0 0 15px rgba(245, 158, 11, 0.3);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Prompt', sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      overflow-x: hidden;
+      padding: 20px;
+    }
+
+    /* --- Toggle Button --- */
+    .mode-btn {
+      position: fixed; top: 20px; right: 20px;
+      background: #fff; border: 2px solid #E5E7EB;
+      border-radius: 50px; padding: 10px 20px;
+      cursor: pointer; font-weight: 600; color: var(--text-main);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: all 0.2s; z-index: 2000;
+      display: flex; align-items: center; gap: 8px; font-size: 0.95rem;
+    }
+    .mode-btn:hover { transform: scale(1.05); border-color: var(--primary); color: var(--primary); }
+    .mode-icon { width: 20px; height: 20px; }
+
+    /* --- Header (Centered) --- */
+    header { 
+      text-align: center; margin-bottom: 30px; margin-top: 10px;
+      width: 100%; max-width: 900px; margin-left: auto; margin-right: auto;
+    }
+    .event-sub-title { font-size: 1.2rem; color: var(--text-sub); font-weight: 500; margin-bottom: 8px; }
+    .main-title-wrapper { display: flex; align-items: center; justify-content: center; gap: 12px; }
+    h1 { 
+      font-size: 3rem; margin: 0; color: var(--primary-dark); font-weight: 800;
+      text-transform: uppercase; letter-spacing: 1px; line-height: 1.1;
+    }
+    .trophy-icon { width: 45px; height: 45px; color: var(--gold); }
+    .total-badge { 
+      display: inline-flex; align-items: center; gap: 8px; 
+      background: #fff; padding: 6px 20px; border-radius: 50px; 
+      box-shadow: var(--shadow-sm); font-weight: 600; color: var(--text-sub); 
+      margin-top: 15px; font-size: 1rem; 
+    }
+    .chart-icon { width: 20px; height: 20px; color: var(--primary); }
+
+    /* --- Layout Container --- */
+    .content-wrapper {
+      width: 100%; max-width: 900px; margin: 0 auto;
+      display: flex; flex-direction: column;
+      gap: 0; transition: all 0.5s ease;
+      position: relative;
+    }
+
+    /* --- QR Panel (Sticky Left) --- */
+    .qr-panel {
+      display: none; opacity: 0; width: 350px; flex-shrink: 0;
+      flex-direction: column; align-items: center; text-align: center;
+      background: white; border-radius: 24px; padding: 30px;
+      box-shadow: var(--shadow-md); 
+      height: fit-content; 
+      position: sticky; top: 80px; 
+    }
+    .qr-title { font-size: 1.8rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 15px; line-height: 1.2; }
+    .qr-image { 
+      width: 100%; border-radius: 16px; 
+      border: 4px solid var(--gold); 
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1); margin-bottom: 15px;
+    }
+    .qr-desc { font-size: 1rem; color: var(--text-sub); }
+
+    /* --- List Panel (Right) --- */
+    .list-panel { width: 100%; }
+    .list-container {
+      display: flex; flex-direction: column; 
+      gap: 12px; /* ช่องไฟ 12px ตามที่ขอ */
+      padding-bottom: 40px;
+    }
+
+    /* ====== SPLIT MODE LOGIC ====== */
+    body.split-mode .content-wrapper {
+      max-width: 1300px;
+      flex-direction: row;
+      gap: 40px;
+      align-items: flex-start;
+    }
+    body.split-mode .qr-panel {
+      display: flex; opacity: 1; animation: slideIn 0.5s ease forwards;
+      width: 450px;
+    }
+    body.split-mode .list-panel { flex-grow: 1; }
+
+    /* Resize in Split Mode */
+    body.split-mode .team-img { width: 110px; }
+    body.split-mode .card-rank-1 .team-img { width: 150px; }
+    body.split-mode .rank-num { font-size: 1.3rem; }
+    body.split-mode .name-main { font-size: 1.1rem; }
+
+    /* --- List Card Design --- */
+    .list-card {
+      background: var(--card-bg); border-radius: 18px; 
+      display: flex; align-items: center;
+      padding: 12px 20px; 
+      border: 1px solid #E5E7EB; 
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s;
+      width: 100%;
+    }
+
+    /* Column Styles */
+    .rank-col { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 50px; flex-shrink: 0; margin-right: 15px; }
+    .rank-num { font-weight: 800; font-size: 1.5rem; color: #D1D5DB; line-height: 1; }
+    .crown-icon { width: 32px; height: 32px; color: var(--gold); margin-bottom: -5px; display: none; }
+
+    .img-col { flex-shrink: 0; margin-right: 20px; }
+    .team-img { width: 130px; aspect-ratio: 16/9; border-radius: 10px; object-fit: cover; display: block; background: #eee; transition: width 0.3s; }
+
+    .info-col { flex-grow: 1; min-width: 0; margin-right: 15px; display: flex; flex-direction: column; justify-content: center; }
+    .name-main { font-weight: 700; font-size: 1.1rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .name-sub { font-weight: 400; font-size: 0.9rem; color: var(--text-sub); margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    
+    .bar-track { width: 100%; height: 8px; background: #F3F4F6; border-radius: 4px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 4px; transition: width 1s ease; }
+
+    .vote-col { flex-shrink: 0; }
+    .vote-pill { background: #EFF6FF; color: var(--primary); border: 1px solid #DBEAFE; padding: 8px 16px; border-radius: 50px; font-weight: 600; font-size: 0.95rem; white-space: nowrap; }
+
+    /* Special Rank 1 */
+    .card-rank-1 { 
+      background: linear-gradient(to right, #ffffff, var(--gold-light)); 
+      border: 2px solid var(--gold); box-shadow: var(--shadow-glow); 
+      padding: 18px 25px; transform: scale(1.02); z-index: 10; margin-bottom: 5px; 
+    }
+    .card-rank-1 .crown-icon { display: block; animation: float 2s ease-in-out infinite; }
+    .card-rank-1 .rank-num { color: var(--gold); font-size: 2.2rem; text-shadow: 1px 1px 0 rgba(0,0,0,0.1); }
+    .card-rank-1 .team-img { width: 170px; border: 2px solid var(--gold); box-shadow: var(--shadow-sm); }
+    .card-rank-1 .name-main { font-size: 1.3rem; color: #000; }
+    .card-rank-1 .bar-fill { background: linear-gradient(90deg, var(--gold), #fbbf24); }
+    .card-rank-1 .vote-pill { background: var(--gold); color: #fff; border: none; box-shadow: 0 4px 6px rgba(245, 158, 11, 0.3); padding: 10px 22px; font-size: 1.1rem; }
+    .card-normal .bar-fill { background: var(--primary); }
+
+    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    .loading-container { text-align: center; margin-top: 50px; color: #9CA3AF; }
+    .spinner { width: 30px; height: 30px; animation: spin 1s linear infinite; color: var(--primary); }
+
+    /* Responsive */
+    @media (max-width: 850px) {
+      body.split-mode .content-wrapper { flex-direction: column; align-items: center; }
+      body.split-mode .qr-panel { width: 100%; position: relative; top: 0; margin-bottom: 20px; }
+      h1 { font-size: 2rem; }
+      .trophy-icon { width: 30px; height: 30px; }
+      .img-col { display: none; } 
+    }
+  </style>
+</head>
+<body>
+
+  <button class="mode-btn" onclick="toggleLayout()">
+    <svg class="mode-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+    </svg>
+    สแกน QR
+  </button>
+
+  <header>
+    <div class="event-sub-title">CRA Job Fair & Education 2026</div>
+    <div class="main-title-wrapper">
+      <svg class="trophy-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20.2 2H15V1H9v1H3.8C2.8 2 2 2.8 2 3.8V5c0 2.2 1.4 4.1 3.4 4.7 1.1 2.5 3.5 4.3 6.6 4.3s5.5-1.8 6.6-4.3c2-.6 3.4-2.5 3.4-4.7V3.8C22 2.8 21.2 2 20.2 2zM5 5V4h4v3.8C6.6 7.2 5 5 5 5zm9 5c-1.7 0-3-1.3-3-3V4h2v1c0 2.8 2.2 5 5 5h.2c-1.2 1.8-3.2 3-5.2 3zm4.2-5.2c0 1.2-1 2.2-2.2 2.2V4h2v1.8zM12 15c-1.1 0-2 .9-2 2v2H7v2h10v-2h-3v-2c0-1.1-.9-2-2-2z"/></svg>
+      <h1>รางวัล Popular Vote</h1>
+    </div>
+    <div class="total-badge">
+      <svg class="chart-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+      &nbsp; รวมคะแนนโหวต: <span id="total-sum">0</span>
+    </div>
+  </header>
+
+  <div class="content-wrapper">
+    <div class="qr-panel">
+      <div class="qr-title">สแกน QR เพื่อโหวต<br>ทีมที่ถูกใจมากที่สุด</div>
+      <img src="https://s.imgz.io/2026/02/11/AAGB4-AUqkc_1770718222018d1dfd3d6650ac071.png" alt="QR Code" class="qr-image">
+      <div class="qr-desc">ร่วมเป็นส่วนหนึ่งในการตัดสินรางวัล Popular Vote</div>
+    </div>
+
+    <div class="list-panel">
+      <div id="list-area" class="list-container">
+        <div class="loading-container">
+          <svg class="spinner" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4V2A10 10 0 0 0 2 12h2a8 8 0 0 1 8-8z"/></svg>
+          <p>กำลังโหลด...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Configuration ---
+    // ใส่ ID ของ Google Sheet (ต้อง Publish to web เป็น CSV แล้ว)
+    const SHEET_ID = '1feOczrnI9IlgqL31UL51rFdBp59kyvGgnhvyP_wDVh4'; 
+    const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/pub?gid=0&single=true&output=csv`;
+
+    // ข้อมูลทีม (Mapping กับชื่อใน Sheet)
+    const TEAMS_DATA = [
+      { 
+        full_name: "Nurse To Be Excellent - พยาบาลศาสตรบัณฑิต", 
+        name: "Nurse To Be Excellent", 
+        major: "พยาบาลศาสตรบัณฑิต",
+        img: "https://s.imgz.io/2026/02/11/3159955c1133c2f4d.jpg" 
+      },
+      { 
+        full_name: "Nawat-Next - วท.บ. สาขาวิชานวัตกรรมวิทยาศาสตร์การแพทย์", 
+        name: "Nawat-Next", 
+        major: "วท.บ. สาขาวิชานวัตกรรมวิทยาศาสตร์การแพทย์",
+        img: "https://s.imgz.io/2026/02/11/2a98288b32be20600.jpg" 
+      },
+      { 
+        full_name: "SoHigh - วท.บ. สาขาวิชาวิทยาศาสตร์ข้อมูลสุขภาพ", 
+        name: "SoHigh", 
+        major: "วท.บ. สาขาวิชาวิทยาศาสตร์ข้อมูลสุขภาพ",
+        img: "https://s.imgz.io/2026/02/11/487d694afabe73aba.jpg" 
+      },
+      { 
+        full_name: "Tom and Jerry - วท.บ. สาขาวิชารังสีเทคนิค", 
+        name: "Tom and Jerry", 
+        major: "วท.บ. สาขาวิชารังสีเทคนิค",
+        img: "https://s.imgz.io/2026/02/11/56bab80fe7f2f1376.jpg" 
+      },
+      { 
+        full_name: "BNS Wish - พยาบาลศาสตรบัณฑิต (รับผู้สำเร็จปริญญาตรีสาขาอื่น)", 
+        name: "BNS Wish", 
+        major: "พยาบาลศาสตรบัณฑิต (รับผู้สำเร็จปริญญาตรีสาขาอื่น)",
+        img: "https://s.imgz.io/2026/02/11/6081f2e3502476f5e.jpg" 
+      },
+      { 
+        full_name: "สามทหารเสือ - วท.บ. สาขาวิชาเทคโนโลยีอาหารทางการแพทย์และสุขภาพ", 
+        name: "สามทหารเสือ", 
+        major: "วท.บ. สาขาวิชาเทคโนโลยีอาหารทางการแพทย์และสุขภาพ",
+        img: "https://s.imgz.io/2026/02/11/80fe464f125fd609e.jpg" 
+      },
+      { 
+        full_name: "อินเตอร์อินใจ - พยาบาลศาสตรบัณฑิต (หลักสูตรนานาชาติ)", 
+        name: "อินเตอร์อินใจ", 
+        major: "พยาบาลศาสตรบัณฑิต (หลักสูตรนานาชาติ)",
+        img: "https://s.imgz.io/2026/02/11/92988b5cb5789de79.jpg" 
+      },
+      { 
+        full_name: "Human Move Next - วท.บ. วิทยาศาสตร์การเคลื่อนไหวและสุขภาพ", 
+        name: "Human Move Next", 
+        major: "วท.บ. วิทยาศาสตร์การเคลื่อนไหวและสุขภาพ",
+        img: "https://s.imgz.io/2026/02/11/16b4ae5a00e65e1f7.jpg" 
+      },
+      { 
+        full_name: "SOS - วท.บ. สาขาวิชาฉุกเฉินการแพทย์", 
+        name: "SOS", 
+        major: "วท.บ. สาขาวิชาฉุกเฉินการแพทย์",
+        img: "https://s.imgz.io/2026/02/11/75958eef47ff76210.jpg" 
+      }
+    ];
+
+    function toggleLayout() {
+      document.body.classList.toggle('split-mode');
+    }
+
+    let lastDataJson = "";
+
+    async function fetchData() {
+      try {
+        const response = await fetch(CSV_URL);
+        const text = await response.text();
+        processCSV(text);
+      } catch (error) {
+        console.error("Error fetching CSV:", error);
+      }
+    }
+
+    function processCSV(csvText) {
+      const rows = csvText.split('\n').slice(1); // ข้าม Header แถวแรก
+      const voteCounts = {};
+
+      rows.forEach(row => {
+        // แยก CSV อย่างง่าย (ถ้าชื่อทีมไม่มี comma ใช้ split ได้เลย)
+        // Column B คือ index 1
+        const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/); 
+        let vote = cols[1]; 
+        
+        if (vote) {
+          // ลบ quote ถ้ามี
+          vote = vote.replace(/^"|"$/g, '').trim();
+          voteCounts[vote] = (voteCounts[vote] || 0) + 1;
+        }
+      });
+
+      // รวมคะแนนกับข้อมูลทีม
+      const result = TEAMS_DATA.map(team => ({
+        name: team.name,
+        major: team.major,
+        image: team.img,
+        score: voteCounts[team.full_name] || 0
+      }));
+
+      // เรียงลำดับ
+      result.sort((a, b) => b.score - a.score);
+
+      renderDashboard(result);
+    }
+
+    function renderDashboard(data) {
+      let currentDataJson = JSON.stringify(data);
+      if (currentDataJson === lastDataJson) return;
+      lastDataJson = currentDataJson;
+
+      const totalVotes = data.reduce((acc, curr) => acc + curr.score, 0);
+      document.getElementById('total-sum').innerText = totalVotes.toLocaleString();
+      const maxScore = Math.max(...data.map(d => d.score)) || 1;
+      
+      const listArea = document.getElementById('list-area');
+      let html = '';
+
+      data.forEach((team, index) => {
+        const rank = index + 1;
+        const percent = (team.score / maxScore) * 100;
+        
+        let specialClass = (rank === 1) ? 'card-rank-1' : 'card-normal';
+        
+        html += `
+          <div class="list-card ${specialClass}">
+            <div class="rank-col">
+              <svg class="crown-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11h-14zm14 1v2H5v-2h14z"/>
+              </svg>
+              <div class="rank-num">${rank}</div>
+            </div>
+
+            <div class="img-col">
+              <img src="${team.image}" class="team-img" onerror="this.src='https://via.placeholder.com/160x90?text=IMG'">
+            </div>
+
+            <div class="info-col">
+              <div class="name-main">${team.name}</div>
+              <div class="name-sub">${team.major}</div>
+              <div class="bar-track">
+                <div class="bar-fill" style="width: ${percent}%;"></div>
+              </div>
+            </div>
+
+            <div class="vote-col">
+              <div class="vote-pill">โหวต ${team.score}</div>
+            </div>
+          </div>
+        `;
+      });
+
+      listArea.innerHTML = html;
+    }
+
+    // เริ่มทำงาน
+    fetchData();
+    setInterval(fetchData, 3000); // เช็คข้อมูลทุก 3 วินาที
+  </script>
+</body>
+</html>
