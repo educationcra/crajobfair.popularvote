@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    /* Reset & Setup */
     * { box-sizing: border-box; }
     :root {
       --bg-body: #F3F4F6; --card-bg: #FFFFFF; --primary: #2563EB; --primary-dark: #1e40af;
@@ -15,98 +14,113 @@
 
     body {
       margin: 0; font-family: 'Prompt', sans-serif; background-color: var(--bg-body);
-      color: var(--text-main); overflow-x: hidden; padding: 20px; min-height: 100vh;
+      color: var(--text-main); padding: 20px;
     }
 
     /* --- Header --- */
     header { text-align: center; margin-bottom: 30px; }
-    h1 { font-size: 3rem; margin: 0; color: var(--primary-dark); font-weight: 800; text-transform: uppercase; }
-    .total-badge { display: inline-flex; align-items: center; gap: 8px; background: #fff; padding: 6px 20px; border-radius: 50px; margin-top: 15px; font-weight: 600; }
-
-    /* --- Toggle Button --- */
-    .mode-btn {
-      position: fixed; top: 20px; right: 20px; background: #fff; border: 2px solid #E5E7EB;
-      border-radius: 50px; padding: 10px 20px; cursor: pointer; z-index: 2000; font-weight: 600;
-      display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
+    h1 { font-size: 2.5rem; margin: 0; color: var(--primary-dark); font-weight: 800; text-transform: uppercase; }
+    .total-badge { display: inline-flex; align-items: center; gap: 8px; background: #fff; padding: 6px 25px; border-radius: 50px; margin-top: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
     /* --- Content Layout --- */
     .content-wrapper {
-      width: 100%; max-width: 900px; margin: 0 auto;
-      display: grid; grid-template-columns: 1fr; gap: 0; transition: all 0.5s ease;
+      width: 100%; max-width: 1400px; margin: 0 auto;
+      display: flex; flex-wrap: wrap; /* เปลี่ยนเป็นบน-ล่างเมื่อที่แคบ */
+      gap: 30px; justify-content: center;
     }
 
+    /* --- QR Panel (Sticky PC / Auto Mobile) --- */
     .qr-panel {
-      display: none; flex-direction: column; align-items: center; text-align: center;
-      background: white; border-radius: 24px; padding: 40px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      position: sticky; top: 40px; height: fit-content;
+      flex: 1; min-width: 320px; max-width: 500px; /* คุมขนาดไม่ให้บีบ */
+      background: white; border-radius: 24px; padding: 40px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center;
+      height: fit-content; position: sticky; top: 20px;
     }
-    .qr-image { width: 100%; max-width: 400px; border-radius: 16px; border: 5px solid var(--gold); margin-bottom: 20px; }
+    .qr-title { font-size: 1.8rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 20px; }
+    .qr-image { width: 100%; border-radius: 16px; border: 5px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
 
-    /* --- Leaderboard List --- */
-    .list-container { display: flex; flex-direction: column; gap: 12px; }
+    /* --- List Panel --- */
+    .list-panel { flex: 1.5; min-width: 350px; }
+    .list-container { display: flex; flex-direction: column; gap: 15px; }
+
+    /* --- List Card Design --- */
     .list-card {
       background: var(--card-bg); border-radius: 18px; display: flex; align-items: center;
-      padding: 15px 25px; border: 1px solid #E5E7EB; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      padding: 15px 20px; border: 1px solid #E5E7EB; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
     }
-    .rank-col { width: 60px; flex-shrink: 0; text-align: center; }
-    .rank-num { font-weight: 800; font-size: 1.6rem; color: #D1D5DB; }
+
+    /* --- Rank 1: Big & Special --- */
+    .card-rank-1 {
+      background: var(--gold-light); border: 2px solid var(--gold);
+      padding: 25px 30px; margin-bottom: 10px;
+      box-shadow: 0 15px 35px rgba(251, 191, 36, 0.2);
+      animation: float 3s ease-in-out infinite; /* คืนชีพอนิเมชัน */
+    }
+    .card-rank-1 .rank-num { color: var(--gold); font-size: 3rem; text-shadow: 2px 2px 0 rgba(0,0,0,0.05); }
+    .card-rank-1 .team-img { width: 160px; border: 3px solid var(--gold); }
+    .card-rank-1 .name-main { font-size: 1.5rem; }
+
+    /* --- Components --- */
+    .rank-col { width: 70px; flex-shrink: 0; text-align: center; position: relative; }
+    .crown-icon { font-size: 1.5rem; position: absolute; top: -20px; left: 50%; transform: translateX(-50%); display: none; }
+    .card-rank-1 .crown-icon { display: block; }
+
     .img-col { flex-shrink: 0; margin: 0 20px; }
-    .team-img { width: 100px; aspect-ratio: 16/9; border-radius: 10px; object-fit: cover; background: #eee; }
+    .team-img { width: 100px; aspect-ratio: 16/9; border-radius: 12px; object-fit: cover; background: #eee; }
+    
     .info-col { flex-grow: 1; min-width: 0; }
-    .name-main { font-weight: 700; font-size: 1.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .name-sub { font-weight: 400; font-size: 0.95rem; color: var(--text-sub); margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .bar-track { width: 100%; height: 8px; background: #F3F4F6; border-radius: 4px; overflow: hidden; }
-    .bar-fill { height: 100%; border-radius: 4px; transition: width 1s ease; background: var(--primary); }
-    .vote-pill { background: #EFF6FF; color: var(--primary); padding: 8px 18px; border-radius: 50px; font-weight: 600; white-space: nowrap; }
+    .name-main { font-weight: 800; font-size: 1.2rem; margin-bottom: 4px; white-space: normal; } /* ไม่โดนย่อ */
+    .name-sub { font-weight: 400; font-size: 0.95rem; color: var(--text-sub); white-space: normal; }
 
-    /* --- Rank 1 Styling --- */
-    .card-rank-1 { background: var(--gold-light); border: 2px solid var(--gold); }
-    .card-rank-1 .rank-num { color: var(--gold); font-size: 2.2rem; }
+    .bar-track { width: 100%; height: 8px; background: #F3F4F6; border-radius: 10px; margin-top: 10px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 10px; transition: width 1s ease; background: var(--primary); }
     .card-rank-1 .bar-fill { background: linear-gradient(90deg, var(--gold), #fbbf24); }
-    .card-rank-1 .vote-pill { background: var(--gold); color: #fff; }
 
-    /* ====== SPLIT MODE (PC) ====== */
-    body.split-mode .content-wrapper {
-      max-width: 1400px; grid-template-columns: 1fr 1.2fr; gap: 40px;
+    .vote-pill { background: #EFF6FF; color: var(--primary); padding: 10px 20px; border-radius: 50px; font-weight: 700; white-space: nowrap; }
+    .card-rank-1 .vote-pill { background: var(--gold); color: #fff; font-size: 1.1rem; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
     }
-    body.split-mode .qr-panel { display: flex; }
 
-    /* ====== MOBILE OPTIMIZATION ====== */
-    @media (max-width: 600px) {
-      .mode-btn { display: none !important; } /* ซ่อนปุ่ม QR ในมือถือ */
+    /* ====== RESPONSIVE ====== */
+    @media (max-width: 900px) {
+      .content-wrapper { flex-direction: column; align-items: center; } /* เปลี่ยนเป็นบนล่าง */
+      .qr-panel { position: relative; top: 0; width: 100%; }
+      .list-panel { width: 100%; }
       h1 { font-size: 1.8rem; }
-      .list-card { padding: 12px; }
-      .img-col { margin: 0 10px; }
-      .team-img { width: 60px; }
-      /* แก้ไขให้ตัวหนังสือไม่ขาด */
-      .name-main, .name-sub { white-space: normal; overflow: visible; text-overflow: clip; font-size: 0.9rem; }
-      .rank-num { font-size: 1.2rem; }
-      .vote-pill { padding: 6px 12px; font-size: 0.8rem; }
+    }
+
+    @media (max-width: 600px) {
+      .list-card { flex-direction: column; text-align: center; padding: 20px; }
+      .img-col { margin: 15px 0; }
+      .rank-col { margin-bottom: 10px; }
+      .vote-pill { margin-top: 15px; width: 100%; }
     }
   </style>
 </head>
 <body>
 
-  <button class="mode-btn" onclick="document.body.classList.toggle('split-mode')">สแกน QR</button>
-
   <header>
-    <div style="color: var(--text-sub); font-size: 1.1rem;">CRA Job Fair & Education 2026</div>
-    <h1>รางวัล Popular Vote</h1>
-    <div class="total-badge">รวมคะแนนโหวต: <span id="total-sum">0</span></div>
+    <div style="color: var(--text-sub);">CRA Job Fair & Education 2026</div>
+    <h1>รางวัล POPULAR VOTE</h1>
+    <div class="total-badge">
+      <span style="font-size: 1.2rem;">รวมคะแนนโหวต: <b id="total-sum">0</b></span>
+    </div>
   </header>
 
   <div class="content-wrapper">
     <div class="qr-panel">
-      <h2 style="color: var(--primary-dark); font-size: 2rem;">สแกน QR เพื่อโหวต</h2>
+      <div class="qr-title">สแกน QR เพื่อโหวต<br>ทีมที่ชื่นชอบ</div>
       <img src="https://s.imgz.io/2026/02/11/AAGB4-AUqkc_1770718222018d1dfd3d6650ac071.png" class="qr-image" alt="QR Code">
-      <p style="color: var(--text-sub); font-size: 1.1rem;">ร่วมเป็นส่วนหนึ่งในการตัดสินรางวัล Popular Vote</p>
+      <p style="color: var(--text-sub); margin-top: 20px;">ร่วมเป็นส่วนหนึ่งในการตัดสินรางวัล Popular Vote</p>
     </div>
 
     <div class="list-panel">
       <div id="list-area" class="list-container">
-        <p style="text-align:center;">กำลังโหลดข้อมูล...</p>
-      </div>
+        </div>
     </div>
   </div>
 
@@ -129,8 +143,13 @@
           const pc = (team.score / maxS) * 100;
           return `
             <div class="list-card ${r===1?'card-rank-1':''}">
-              <div class="rank-col"><span class="rank-num">${r}</span></div>
-              <div class="img-col"><img src="${team.image}" class="team-img" onerror="this.src='https://via.placeholder.com/100x56?text=IMG'"></div>
+              <div class="rank-col">
+                <div class="crown-icon">👑</div>
+                <div class="rank-num">${r}</div>
+              </div>
+              <div class="img-col">
+                <img src="${team.image}" class="team-img" onerror="this.src='https://via.placeholder.com/160x90?text=IMG'">
+              </div>
               <div class="info-col">
                 <div class="name-main">${team.name}</div>
                 <div class="name-sub">${team.major}</div>
